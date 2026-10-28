@@ -21,7 +21,16 @@ quantidade 3 conta como 1 pedido e 3 unidades.
 
 ### Regras de limpeza adotadas
 
-[Vamos preencher a cada Sprint.]
+**Textos (categoria e canal)**
+- Categoria vazia é preenchida com "sem categoria", sem adivinhar o valor real.
+- Categoria: espaços das pontas removidos (`strip`), letras minúsculas (`lower`) e
+  pontuação removida com `re.sub`, mantendo apenas letras e espaços. Como as
+  categorias deste CSV não usam acentos, o padrão aceita apenas `a-z`. Se nada
+  sobrar após a limpeza, o valor vira "sem categoria".
+- Canal: padronizado para Mercado, Loja física e Web com um dicionário.
+  Um canal desconhecido fica vazio para ser investigado, sem ser inventado.
+- 18 categorias vazias foram preenchidas e 131 categorias não vazias foram
+  corrigidas; 45 canais foram padronizados.
 
 ## Guia de execução
 
