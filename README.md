@@ -32,6 +32,17 @@ quantidade 3 conta como 1 pedido e 3 unidades.
 - 18 categorias vazias foram preenchidas e 131 categorias não vazias foram
   corrigidas; 45 canais foram padronizados.
 
+**Valores numéricos (quantidade e preço)**
+- `quantidade` é válida quando é um número inteiro maior que zero.
+- `preco_unitario` é válido quando está preenchido e não é negativo (zero é aceito).
+- Registros inválidos não são apagados nem corrigidos: recebem uma marcação
+  (flag) para ficarem fora das análises que dependem desses valores.
+- Preço vazio não é preenchido com zero, porque vazio significa "desconhecido".
+- Resultado: 7 quantidades inválidas (`-1`), 12 preços vazios, 0 pedidos com
+  os dois problemas, 19 pedidos afetados no total.
+- `custo_unitario` e `desconto_pct` não foram validados, pois não são usados
+  nesta análise (uso opcional segundo o enunciado).
+  
 ## Guia de execução
 
 [Sprint 5]
