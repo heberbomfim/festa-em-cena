@@ -1,36 +1,61 @@
 # Festa em Cena — análise de pedidos de Halloween
 
+Mini-projeto avaliativo do Módulo 1 — Machine Learning e Visão Computacional (SCTEC).
+
 ## Descrição do projeto
 
-A Festa em Cena é uma rede fictícia que vende fantasias e acessórios de
-Halloween pelos canais Mercado, Loja física e Web. [Explicar o problema
-com suas palavras.]
+A **Festa em Cena** é uma rede fictícia que vende fantasias e acessórios de
+Halloween por três canais: **Mercado** (caixas de supermercados parceiros),
+**Loja física** (lojas próprias) e **Web** (site). A empresa quer comparar
+como os pedidos variam por canal e por período, mas os registros têm
+problemas: categorias vazias ou escritas de formas diferentes, canais com
+grafias inconsistentes, quantidades inválidas, preços ausentes e datas
+inválidas.
+
+O objetivo deste programa é **ler, organizar e explorar** o arquivo
+`halloween_vendas.csv` com Python e Pandas, identificando e marcando esses
+problemas **sem inventar valores**, e produzir um relatório simples antes de
+qualquer comparação ou uso em Machine Learning.
 
 ### O que uma linha representa
 
-Cada linha representa um pedido de um único produto. A coluna `quantidade`
+Cada linha representa **um pedido de um único produto**. A coluna `quantidade`
 informa quantas unidades desse produto foram pedidas: uma linha com
-quantidade 3 conta como 1 pedido e 3 unidades.
+quantidade 3 conta como **1 pedido** e **3 unidades**. Por isso, contar
+pedidos é contar linhas, e não somar quantidades.
+
+A base tem 1.500 pedidos, de agosto a novembro de 2024 e de 2025. Os dados
+são fictícios e não representam o mercado real.
 
 ### Colunas principais
 
-- `categoria`: [a preencher]
-- `canal_venda`: [a preencher]
-- `data_venda`: [a preencher]
-- `data_entrega`: [a preencher]
+- `categoria`: tipo de produto (Fantasia ou Acessorio). Tinha valores vazios,
+  espaços extras, maiúsculas e pontuação indevida.
+- `canal_venda`: canal em que o pedido foi registrado (Mercado, Loja física
+  ou Web). Tinha variações de escrita, como " web".
+- `data_venda`: data e hora do registro do pedido, no formato
+  `aaaa-mm-dd hh:mm:ss`, horário local de São Paulo.
+- `data_entrega`: data de entrega do pedido. Está vazia em 143 pedidos.
 
 ### Regras de limpeza adotadas
 
+**Leitura**
+- O CSV é lido com `pd.read_csv()`, separador vírgula, `encoding="utf-8"` e
+  todas as colunas como texto (`dtype=str`), para que valores problemáticos
+  apareçam como vieram e sejam convertidos depois com regras próprias.
+- O DataFrame original (`df_original`) nunca é alterado; o trabalho é feito
+  em uma cópia (`df_org`). O arquivo CSV também não é modificado.
+
 **Textos (categoria e canal)**
 - Categoria vazia é preenchida com "sem categoria", sem adivinhar o valor real.
-- Categoria: espaços das pontas removidos (`strip`), letras minúsculas (`lower`) e
-  pontuação removida com `re.sub`, mantendo apenas letras e espaços. Como as
-  categorias deste CSV não usam acentos, o padrão aceita apenas `a-z`. Se nada
-  sobrar após a limpeza, o valor vira "sem categoria".
+- Categoria: espaços das pontas removidos (`strip`), letras minúsculas (`lower`)
+  e pontuação removida com `re.sub(r"[^a-z\s]", "", texto)`, mantendo apenas
+  letras e espaços. Como as categorias deste CSV não usam acentos, o padrão
+  aceita apenas `a-z`. Se nada sobrar após a limpeza, o valor vira
+  "sem categoria". A primeira letra volta a ser maiúscula só para apresentação.
 - Canal: padronizado para Mercado, Loja física e Web com um dicionário.
   Um canal desconhecido fica vazio para ser investigado, sem ser inventado.
-- 18 categorias vazias foram preenchidas e 131 categorias não vazias foram
-  corrigidas; 45 canais foram padronizados.
+- Os textos originais ficam em `categoria_original` e `canal_original`.
 
 **Valores numéricos (quantidade e preço)**
 - `quantidade` é válida quando é um número inteiro maior que zero.
@@ -38,25 +63,64 @@ quantidade 3 conta como 1 pedido e 3 unidades.
 - Registros inválidos não são apagados nem corrigidos: recebem uma marcação
   (flag) para ficarem fora das análises que dependem desses valores.
 - Preço vazio não é preenchido com zero, porque vazio significa "desconhecido".
-- Resultado: 7 quantidades inválidas (`-1`), 12 preços vazios, 0 pedidos com
-  os dois problemas, 19 pedidos afetados no total.
+- A conversão usa `try/except`, para que um valor impossível de converter não
+  interrompa o programa.
 - `custo_unitario` e `desconto_pct` não foram validados, pois não são usados
   nesta análise (uso opcional segundo o enunciado).
-  
-## Guia de execução
 
 **Datas**
-- `data_venda` foi convertida com `datetime.strptime()` no formato `%Y-%m-%d %H:%M:%S`.
-  O texto original foi preservado em `data_venda_original`.
+- `data_venda` foi convertida com `datetime.strptime()` no formato
+  `%Y-%m-%d %H:%M:%S`. O texto original foi preservado em `data_venda_original`.
 - Foram extraídos ano, mês, dia e hora, e criada a apresentação brasileira
   (`dd/mm/aaaa`) com `strftime()`.
-- 4 datas inválidas (`data_invalida`) foram marcadas e ficaram fora da contagem
-  por ano-mês. Nenhuma foi substituída pela data de hoje.
+- Datas inválidas foram marcadas na coluna `data_invalida` e ficaram fora da
+  contagem por ano-mês. Nenhuma foi substituída pela data de hoje.
 - As contagens por canal e por ano-mês incluem todos os status (são pedidos
   registrados, não vendas concluídas). Ano-mês é usado em vez de só mês,
   para não misturar 2024 e 2025.
 
-## Resultados
+## Guia de execução
+
+### Arquivos necessários
+
+Todos devem estar **na mesma pasta**:
+
+- `analise.ipynb`: notebook com o código da análise.
+- `halloween_vendas.csv`: base de dados original.
+- `README.md`: esta documentação.
+- `report.md`: relatório de insights.
+
+### Requisitos
+
+- Python 3 (desenvolvido com Python 3.14).
+- Bibliotecas `pandas` e `ipykernel`: `pip install pandas ipykernel`.
+- VS Code com as extensões **Python** e **Jupyter**, ou Jupyter Notebook.
+  Os módulos `re`, `datetime` e `pathlib` já vêm com o Python.
+
+### Como executar
+
+1. Baixe ou clone o repositório:
+   `git clone https://github.com/heberbomfim/festa-em-cena.git`
+2. Abra a pasta `festa-em-cena` no VS Code.
+3. Abra `analise.ipynb` e selecione o kernel Python 3.
+4. Clique em **Run All**. As células devem ser executadas em ordem, de cima
+   para baixo. Se o arquivo não for encontrado, confira se o CSV está na mesma
+   pasta do notebook e se o nome está correto.
+
+### Organização do código
+
+| Função | Responsabilidade |
+|---|---|
+| `ler_csv(caminho)` | lê o CSV como texto e devolve o DataFrame |
+| `limpar_categoria(valor)` | aplica `strip`, `lower` e `re.sub`; vazio vira "sem categoria" |
+| `padronizar_canal(valor)` | traduz o canal para o nome oficial com um dicionário |
+| `eh_numero(texto)` | diz se um texto pode ser convertido em número |
+| `converter_quantidade(texto)` | devolve a quantidade inteira válida, ou vazio |
+| `converter_preco(texto)` | devolve o preço válido, ou vazio |
+| `converter_data(texto)` | converte `data_venda` com `strptime`, ou devolve vazio |
+| `formatar_data_br(data)` | apresenta a data como `dd/mm/aaaa` com `strftime` |
+| `data_entrega_vazia(valor)` | diz se a data de entrega está vazia |
+| `gerar_relatorio_status(df)` | reúne os números de qualidade em um dicionário |
 
 ## Resultados
 
@@ -101,3 +165,27 @@ explicação são promoções pós-Halloween ou festas realizadas depois da data
 os dados não informam o motivo. **Limitação:** as contagens incluem pedidos
 cancelados, cobrem apenas agosto a novembro e a base é fictícia. 4 pedidos com
 data inválida ficaram fora desta contagem.
+
+## Reflexão: Machine Learning e qualidade de dados
+
+Um modelo de Machine Learning aprende padrões a partir dos dados que recebe.
+Se os dados têm erros, o modelo aprende os erros ("garbage in, garbage out").
+Neste projeto, sem a padronização, "Fantasia", " Fantasia" e "FANTASIA!!!"
+seriam tratadas como três categorias diferentes, e um modelo veria três grupos
+onde existe apenas um. Da mesma forma, preencher um preço vazio com zero
+ensinaria ao modelo que existem produtos gratuitos, e trocar uma data inválida
+pela data de hoje criaria pedidos em um período em que eles não aconteceram.
+
+Por isso, a limpeza deste projeto segue dois princípios: **padronizar o que é
+claramente o mesmo valor** e **marcar, sem inventar, o que é desconhecido**.
+As marcações (flags) permitem decidir depois, conforme o objetivo, se um
+registro deve ser excluído ou tratado de outra forma.
+
+Mas dados limpos não bastam. Um modelo pode sofrer **overfitting** (decorar
+os dados de treino e falhar em dados novos) ou **underfitting** (ser simples
+demais e não captar o padrão). Evitá-los depende também da
+**representatividade** dos dados, da escolha do modelo e da avaliação com
+dados que o modelo não viu. Esta base, por exemplo, cobre apenas agosto a
+novembro: um modelo treinado nela não deveria ser usado para prever pedidos
+de dezembro ou de outras datas comemorativas, porque esses períodos não estão
+representados.
