@@ -2,7 +2,7 @@
 
 ## Qualidade dos dados
 
-A base tem 1.500 pedidos de agosto a novembro de 2024 e 2025. Antes de comparar canais e períodos, foi preciso corrigir e marcar problemas: 18 categorias vazias foram preenchidas com "sem categoria" e 131 foram padronizadas (ex.: "  FANTASIA!!!" virou "Fantasia"); 45 canais tiveram a escrita corrigida. Também foram marcados 7 pedidos com quantidade -1, 12 com preço vazio e 4 com data de venda inválida. Nenhum valor foi inventado: os registros problemáticos continuam na base, identificados por marcações.
+A base tem 1.500 pedidos de agosto a novembro de 2024 e 2025. Antes de comparar canais e períodos, foi preciso corrigir e marcar problemas: 18 categorias vazias foram preenchidas com "sem categoria" e 131 foram padronizadas (ex.: "  FANTASIA!!!" virou "Fantasia"); 45 canais tiveram a escrita corrigida. Também foram marcados 7 pedidos com quantidade -1, 12 com preço vazio e 4 com data de venda inválida. Nenhum valor foi inventado: os registros problemáticos continuam na base, identificados por colunas de marcação (flags), como problema_quantidade, problema_preco e data_invalida.
 
 ## Insight 1 — entrega sem data não significa cancelamento
 
